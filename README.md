@@ -4,6 +4,10 @@ This module provides a client implementation for sending JSON definitions via HT
 
 For additional examples of how this library works, please visit: [https://go-multiple.com/console](https://go-multiple.com/console).
 
+## Installation
+
+```go get github.com/henrylamb/object-generation-golang```
+
 ## Guide: Using Go Client to Send JSON Definitions
 
 This guide demonstrates how to create a Go client that sends JSON definitions using HTTP POST requests.
