@@ -8,6 +8,15 @@ For additional examples of how this library works, please visit: [https://go-mul
 
 ```go get github.com/henrylamb/object-generation-golang```
 
+To use this library you will need to import it in the below format:
+
+```go
+import (
+"github.com/henrylamb/object-generation-golang/jsonSchema"
+)
+
+```
+
 ## Guide: Using Go Client to Send JSON Definitions
 
 This guide demonstrates how to create a Go client that sends JSON definitions using HTTP POST requests.
