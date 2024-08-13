@@ -27,7 +27,7 @@ Start by defining a `Client` struct that will manage the API connection.
 
 ```go
 type Client struct {
-	APIKey  string // APIKey is the authentication token for the API.
+	Password  string // APIKey is the authentication token for the API.
 	BaseURL string // BaseURL is the base endpoint for API requests.
 }
 ```
@@ -42,7 +42,7 @@ Start by defining a `Client` struct that will manage the API connection.
 
 ```go
 type Client struct {
-	APIKey  string // APIKey is the authentication token for the API.
+	Password  string // APIKey is the authentication token for the API.
 	BaseURL string // BaseURL is the base endpoint for API requests.
 }
 ```
@@ -52,10 +52,10 @@ type Client struct {
 Create a constructor function `NewClient` to initialize a new client instance with the API key and base URL.
 
 ```go
-func NewClient(apiKey string) *Client {
+func NewClient(password, url string) *Client {
 	return &Client{
-		APIKey:  apiKey,
-		BaseURL: "https://example.com/api", // Replace with your API's base URL
+		Password:  password,
+		BaseURL: url, // Replace with your API's base URL
 	}
 }
 ```
@@ -65,32 +65,26 @@ func NewClient(apiKey string) *Client {
 Implement a method `SendRequest` on the `Client` struct to send a POST request with a JSON-encoded definition.
 
 ```go
-func (c *Client) SendRequest(definition *Definition) (*http.Response, error) {
-	url := c.BaseURL
-	if definition.Req != nil {
-		url = definition.Req.URL
-	}
-
-	jsonData, err := json.Marshal(definition)
+func (c *Client) SendRequest(prompt string, definition *Definition) (*Response, error) {
+	// Send the request
+	resp, err := c.SendHttpRequest(prompt, definition)
 	if err != nil {
-		return nil, fmt.Errorf("error marshalling definition: %v", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// Check for non-200 status codes
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("received non-200 response code: %d", resp.StatusCode)
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
+	// Decode the response JSON into the Response struct
+	var response Response
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("error decoding response: %v", err)
 	}
 
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.APIKey)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-
-	return resp, nil
+	return &response, nil
 }
 ```
 
@@ -102,8 +96,9 @@ Demonstrate how to use the `Client` to send a definition using a sample `Definit
 // Example usage
 func ExampleUsage() {
 	// Initialize a new client with your API key
-	apiKey := "your-api-key"
-	client := NewClient(apiKey)
+	url   := "your-container-url"
+	password := "your-password"
+	client   := NewClient(password, url)
 
 	// Define a sample definition
 	definition := &Definition{
