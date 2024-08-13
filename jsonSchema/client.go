@@ -8,8 +8,8 @@ import (
 )
 
 type Client struct {
-	APIKey  string
-	BaseURL string
+	Password string
+	BaseURL  string
 }
 
 type RequestBody struct {
@@ -23,18 +23,16 @@ type Response struct {
 	UsdCost float64 `json:"usdCost"`
 }
 
-func NewClient(apiKey, url string) *Client {
+// NewClient here the password that you would set in the request to ensure secure communication between servers. This value must be set as an environment variable as MULTIPLE_PASSWORD
+func NewClient(password, url string) *Client {
 	return &Client{
-		APIKey:  apiKey,
-		BaseURL: url,
+		Password: password,
+		BaseURL:  url,
 	}
 }
 
 func (c *Client) SendHttpRequest(prompt string, definition *Definition) (*http.Response, error) {
 	url := c.BaseURL
-	if definition.Req != nil {
-		url = definition.Req.URL
-	}
 
 	requestBody := RequestBody{
 		Prompt:     prompt,
@@ -46,13 +44,13 @@ func (c *Client) SendHttpRequest(prompt string, definition *Definition) (*http.R
 		return nil, fmt.Errorf("error marshalling definition: %v", err)
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/objectGen", url), bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.APIKey)
+	req.Header.Set("Authorization", "Bearer "+c.Password)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
