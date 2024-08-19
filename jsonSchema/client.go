@@ -44,7 +44,7 @@ func (c *Client) SendHttpRequest(prompt string, definition *Definition) (*http.R
 		return nil, fmt.Errorf("error marshalling definition: %v", err)
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/objectGen", url), bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/objectGen", url), bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
