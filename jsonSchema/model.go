@@ -1,36 +1,5 @@
 package jsonSchema
 
-import (
-	"encoding/json"
-)
-
-type DataType string
-
-const (
-	Object  DataType = "object"
-	Number  DataType = "number"
-	Integer DataType = "integer"
-	String  DataType = "string"
-	Array   DataType = "array"
-	Null    DataType = "null"
-	Boolean DataType = "boolean"
-	Map     DataType = "map"
-)
-
-type ModelType string
-
-const (
-	Gpt3         ModelType = "Gpt3"
-	Gpt4         ModelType = "Gpt4"
-	ClaudeSonnet ModelType = "ClaudeSonnet"
-	ClaudeHaiku  ModelType = "ClaudeHaiku"
-	Llama70b     ModelType = "Llama70b"
-	Gpt4Mini     ModelType = "Gpt4Mini"
-	Llama405b    ModelType = "Llama405"
-	Llama8b      ModelType = "Llama8b"
-	Default      ModelType = "Default"
-)
-
 // Definition is a struct for describing a JSON Schema.
 // It is fairly limited, and you may have better luck using a third-party library.
 type Definition struct {
@@ -94,47 +63,23 @@ type HashMap struct {
 	FieldDefinition *Definition `json:"fieldDefinition,omitempty"`
 }
 
-func (d Definition) MarshalJSON() ([]byte, error) {
-	if d.Properties == nil {
-		d.Properties = make(map[string]Definition)
-	}
-	type Alias Definition
-	return json.Marshal(struct {
-		Alias
-	}{
-		Alias: (Alias)(d),
-	})
+// Focus the idea for this is so that when a narrow focus request needs to be sent out to an LLM without needing all the additional information. From prior generation.
+type Focus struct {
+	Prompt string `json:"prompt"`
+	//the fields value denotes the properties that will be extracted from the properties fields. These will only operate at a single level of generation.
+	//the order in which the fields that are listed will be the order for which the currently generated information will be presented below the prompt value.
+	Fields []string `json:"fields"`
+
+	//KeepOriginal -- for keeping the original prompt in cases for lists where it would otherwise be removed from the context
+	KeepOriginal bool `json:"keepOriginal,omitempty"`
 }
 
-// ToMap converts the Definition struct to a map representation
-func (d Definition) ToMap() map[string]interface{} {
-	result := make(map[string]interface{})
-
-	if d.Type != "" {
-		result["type"] = d.Type
-	}
-	if d.Instruction != "" {
-		result["instruction"] = d.Instruction
-	}
-	if d.Properties != nil && len(d.Properties) > 0 {
-		propertiesMap := make(map[string]interface{})
-		for key, value := range d.Properties {
-			propertiesMap[key] = value.ToMap()
-		}
-		result["properties"] = propertiesMap
-	}
-	if len(d.Required) > 0 {
-		result["required"] = d.Required
-	}
-	if d.Items != nil {
-		result["items"] = d.Items.ToMap()
-	}
-	if d.Model != "" {
-		result["model"] = d.Model
-	}
-	if len(d.ProcessingOrder) > 0 {
-		result["processingOrder"] = d.ProcessingOrder
-	}
-
-	return result
+// RequestFormat defines the structure of the request
+type RequestFormat struct {
+	URL           string                 `json:"url"`
+	Method        HTTPMethod             `json:"method"`
+	Headers       map[string]string      `json:"headers,omitempty"`
+	Body          map[string]interface{} `json:"body,omitempty"`
+	Authorization string                 `json:"authorization,omitempty"`
+	RequireFields []string               `json:"requirFields,omitempty"`
 }

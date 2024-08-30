@@ -1,42 +1,19 @@
-package jsonSchema
+package client
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/henrylamb/object-generation-golang/jsonSchema"
 	"net/http"
 )
 
-type Client struct {
-	Password string
-	BaseURL  string
-}
-
-type RequestBody struct {
-	Prompt     string      `json:"prompt"`
-	Definition *Definition `json:"definition"`
-}
-
-// Create a response struct
-type Response struct {
-	Data    []byte  `json:"data"` //this data can then be marshalled into the apprioate object type.
-	UsdCost float64 `json:"usdCost"`
-}
-
-// NewClient here the password that you would set in the request to ensure secure communication between servers. This value must be set as an environment variable as MULTIPLE_PASSWORD
-func NewClient(password, url string) *Client {
-	return &Client{
-		Password: password,
-		BaseURL:  url,
-	}
-}
-
-func (c *Client) SendHttpRequest(prompt string, definition *Definition) (*http.Response, error) {
+func (c *Client) SendHttpToolRequest(prompt string, subFunctions []*jsonSchema.SubordinateFunction) (*http.Response, error) {
 	url := c.BaseURL
 
-	requestBody := RequestBody{
-		Prompt:     prompt,
-		Definition: definition,
+	requestBody := ToolRequestBody{
+		Prompt:       prompt,
+		SubFunctions: subFunctions,
 	}
 
 	jsonData, err := json.Marshal(requestBody)
@@ -62,9 +39,9 @@ func (c *Client) SendHttpRequest(prompt string, definition *Definition) (*http.R
 }
 
 // Wrapper function to process the response and return the custom Response type
-func (c *Client) SendRequest(prompt string, definition *Definition) (*Response, error) {
+func (c *Client) SendToolRequest(prompt string, subFunctions []*jsonSchema.SubordinateFunction) (*jsonSchema.SubordinateFunction, error) {
 	// Send the request
-	resp, err := c.SendHttpRequest(prompt, definition)
+	resp, err := c.SendHttpToolRequest(prompt, subFunctions)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +53,7 @@ func (c *Client) SendRequest(prompt string, definition *Definition) (*Response, 
 	}
 
 	// Decode the response JSON into the Response struct
-	var response Response
+	var response jsonSchema.SubordinateFunction
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		return nil, fmt.Errorf("error decoding response: %v", err)
 	}

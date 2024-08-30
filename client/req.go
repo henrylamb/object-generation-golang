@@ -1,36 +1,16 @@
-package jsonSchema
+package client
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/henrylamb/object-generation-golang/jsonSchema"
 	"log"
 	"net/http"
 )
 
-type HTTPMethod string
-
-// Constants for HTTP methods
-const (
-	GET    HTTPMethod = "GET"
-	POST   HTTPMethod = "POST"
-	PUT    HTTPMethod = "PUT"
-	DELETE HTTPMethod = "DELETE"
-	PATCH  HTTPMethod = "PATCH"
-)
-
-// RequestFormat defines the structure of the request
-type RequestFormat struct {
-	URL           string                 `json:"url"`
-	Method        HTTPMethod             `json:"method"`
-	Headers       map[string]string      `json:"headers,omitempty"`
-	Body          map[string]interface{} `json:"body,omitempty"`
-	Authorization string                 `json:"authorization,omitempty"`
-	RequireFields []string               `json:"requirFields,omitempty"`
-}
-
 // ExecuteRequest executes an HTTP request based on the RequestFormat
-func (d *Definition) ExecuteRequest(currentGen map[string]any) (*http.Response, error) {
+func ExecuteRequest(currentGen map[string]any, d *jsonSchema.Definition) (*http.Response, error) {
 	// Merge currentGen into the existing body
 	if d.Req.Body == nil {
 		d.Req.Body = make(map[string]interface{})
@@ -68,10 +48,11 @@ func (d *Definition) ExecuteRequest(currentGen map[string]any) (*http.Response, 
 	return resp, nil
 }
 
-func SendRequest(def *Definition, currentGen map[string]any) *Res {
+// the below occurs within the internal workings (i think)
+func SendRequest(def *jsonSchema.Definition, currentGen map[string]any) *Res {
 	//the request that is sent out needs to send out a current map of the generated object.
 
-	request, err := def.ExecuteRequest(currentGen)
+	request, err := ExecuteRequest(currentGen, def)
 	if err != nil {
 		log.Println("failed to execute request", err)
 		return nil
