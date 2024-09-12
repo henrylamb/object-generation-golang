@@ -17,9 +17,6 @@ func (d Definition) ToMap() map[string]interface{} {
 		}
 		result["properties"] = propertiesMap
 	}
-	if len(d.Required) > 0 {
-		result["required"] = d.Required
-	}
 	if d.Items != nil {
 		result["items"] = d.Items.ToMap()
 	}
