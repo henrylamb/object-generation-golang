@@ -18,12 +18,9 @@ const (
 	CreateImageSize1024x1792 ImageSize = "1024x1792"
 )
 
+// Image if you want the Url of the image use the DataType String otherwise use the DataType Byte
 type Image struct {
 	Model *ImageModel `json:"model,omitempty"`
 	Size  *ImageSize  `json:"format,omitempty"`
 	//the below determine how the data is returned back to the user. ie how the string is returned back to them and how it should be processed
-	Url    bool `json:"url,omitempty"` //if this is true then the url returned will be format of /generated/"image url"
-	Base64 bool `json:"base64,omitempty"`
-	//return format --> this is the format that the image will be returned in
-
 }

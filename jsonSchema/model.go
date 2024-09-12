@@ -21,34 +21,32 @@ type Definition struct {
 	SystemPrompt *string `json:"systemPrompt,omitempty"`
 	// Req allows a developer to send out a request at a given point to ensure that additional information can be extracted from external databases
 
-	// ImprovementProcess --> so that the user can speficy when a super high quality completion is needed and it can be improved upon
+	// ImprovementProcess --> so that the user can specify when a super high quality completion is needed and it can be improved upon
 	ImprovementProcess bool `json:"improvementProcess,omitempty"`
-	//TODO all the below fields are in BETA
-	// SelectFields has the aim of being able to select multiple pieice of information and when they are all present then continue with processing. Such that the selection of information can work like so:
-	/*
-		The system works as an absolute path that has to be selected. So starting from the top most object then down to the selected field(s)
-		"car.color" --> this would fetch the information from the car field and then the color field.
-		"cars.color" --> Would return the entire list of colours that have been generated so far
-	*/
 
 	//Map is used here as so that a map of values can be created and then returned -- useful in the instruction creation process -- not sure how useful it is otherwise
 	HashMap *HashMap
 
 	//the other data types that need to be filled for the object to be generated within GoR
-	Audio *Audio `json:"audio,omitempty"`
-	Image *Image `json:"image,omitempty"`
+	TextToSpeech *TextToSpeech `json:"textToSpeech,omitempty"`
+	SpeechToText *SpeechToText `json:"speechToText,omitempty"`
+	Image        *Image        `json:"image,omitempty"`
 
 	//Utility fields:
 	Req *RequestFormat
 	// NarrowFocus
 	NarrowFocus *Focus
 
+	// SelectFields has the aim of being able to select multiple pieice of information and when they are all present then continue with processing. Such that the selection of information can work like so:
+	//The system works as an absolute path that has to be selected. So starting from the top most object then down to the selected field(s)
+	//"car.color" --> this would fetch the information from the car field and then the color field.
+	//"cars.color" --> Would return the entire list of colours that have been generated so far
 	SelectFields []string `json:"selectFields,omitempty"`
 
 	// Choices For determining which of the property fields should be generated
 	Choices *Choices `json:"choices,omitempty"`
 
-	// Voters this is used for determining whether or not you want to have voters determine the qulaity of completions. Increases costs but improves quality. If avialible to your tier then turned on automatically.
+	// Voters this is used for determining whether you want to have voters determine the qulaity of completions. Increases costs but improves quality. If avialible to your tier then turned on automatically.
 	Voters bool `json:"voters,omitempty"`
 }
 

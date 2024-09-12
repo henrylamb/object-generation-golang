@@ -26,6 +26,16 @@ func ConvertProtoToModel(protoDef *pb.Definition) *jsonSchema.Definition {
 		NarrowFocus:        ConvertProtoToFocus(protoDef.NarrowFocus),
 		Req:                ConvertProtoToRequestFormat(protoDef.Req),
 		Choices:            ConvertProtoToChoices(protoDef.Choices),
+		SpeechToText: &jsonSchema.SpeechToText{
+			Model:             (*jsonSchema.SpeechToTextModel)(&protoDef.SpeechToText.Model),
+			AudioToTranscribe: protoDef.SpeechToText.AudioToTranscribe,
+			ToCaptions:        protoDef.SpeechToText.ToCaptions,
+			ToString:          protoDef.SpeechToText.ToString,
+		},
+		TextToSpeech: &jsonSchema.TextToSpeech{
+			Model:         (*jsonSchema.TextToSpeechModel)(&protoDef.TextToSpeech.Model),
+			StringToAudio: protoDef.TextToSpeech.StringToAudio,
+		},
 	}
 
 	for key, protoProperty := range protoDef.Properties {
@@ -61,6 +71,20 @@ func ConvertModelToProto(modelDef *jsonSchema.Definition) *pb.Definition {
 		NarrowFocus:        ConvertModelToProtoFocus(modelDef.NarrowFocus),
 		Req:                ConvertModelToProtoRequestFormat(modelDef.Req),
 		Choices:            ConvertModelToProtoChoices(modelDef.Choices),
+		Image: &pb.Image{
+			Model: string(*modelDef.Image.Model),
+			Size:  string(*modelDef.Image.Size),
+		},
+		SpeechToText: &pb.SpeechToText{
+			Model:             string(*modelDef.SpeechToText.Model),
+			AudioToTranscribe: modelDef.SpeechToText.AudioToTranscribe,
+			ToCaptions:        modelDef.SpeechToText.ToCaptions,
+			ToString:          modelDef.SpeechToText.ToString,
+		},
+		TextToSpeech: &pb.TextToSpeech{
+			Model:         string(*modelDef.TextToSpeech.Model),
+			StringToAudio: modelDef.TextToSpeech.StringToAudio,
+		},
 	}
 
 	for key, modelProperty := range modelDef.Properties {

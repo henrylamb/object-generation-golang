@@ -23,6 +23,30 @@ message Definition {
   Choices choices = 12; // Corresponds to Go's Choices field
   bool voters = 13; // Corresponds to Go's Voters field
   HashMap hashMap = 14; // Corresponds to Go's HashMap field
+  TextToSpeech textToSpeech = 15; // Corresponds to Go's Audio field
+  SpeechToText speechToText = 16; // Corresponds to Go's Speech field
+  Image image = 17; // Corresponds to Go's Image field
+}
+
+// Audio message
+message TextToSpeech {
+  string model = 1; // Corresponds to Go's TextToSpeechModel field
+  string stringToAudio = 2; // Corresponds to Go's StringToAudio field
+}
+
+// SpeechToText message
+message SpeechToText {
+  string model = 1; // Corresponds to Go's SpeechToTextModel field
+  bytes audioToTranscribe = 2; // Corresponds to Go's AudioToTranscribe field
+  bool toCaptions = 3; // Corresponds to Go's ToCaptions field
+  bool toString = 4; // Corresponds to Go's ToString field
+}
+
+
+// Image message
+message Image {
+  string model = 1; // Corresponds to Go's ImageModel field
+  string size = 2; // Corresponds to Go's ImageSize field
 }
 
 // Choices message
