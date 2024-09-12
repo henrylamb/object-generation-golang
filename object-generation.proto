@@ -12,18 +12,17 @@ message Definition {
   string type = 1; // Corresponds to Go's DataType field (as a string)
   string instruction = 2; // Corresponds to Go's Instruction field
   map<string, Definition> properties = 3; // Corresponds to Go's Properties field
-  repeated string required = 4; // Corresponds to Go's Required field
-  Definition items = 5; // Corresponds to Go's Items field
-  string model = 6; // Corresponds to Go's ModelType field (as a string)
-  repeated string processingOrder = 7; // Corresponds to Go's ProcessingOrder field
-  string systemPrompt = 8; // Corresponds to Go's SystemPrompt field
-  RequestFormat req = 9; // Corresponds to Go's Req field
-  Focus narrowFocus = 10; // Corresponds to Go's NarrowFocus field
-  bool improvementProcess = 11; // Corresponds to Go's ImprovementProcess field
-  repeated string selectFields = 12; // Corresponds to Go's SelectFields field
-  Choices choices = 13; // Corresponds to Go's Choices field
-  bool voters = 14; // Corresponds to Go's Voters field
-  HashMap hashMap = 15; // Corresponds to Go's HashMap field
+  Definition items = 4; // Corresponds to Go's Items field
+  string model = 5; // Corresponds to Go's ModelType field (as a string)
+  repeated string processingOrder = 6; // Corresponds to Go's ProcessingOrder field
+  string systemPrompt = 7; // Corresponds to Go's SystemPrompt field
+  RequestFormat req = 8; // Corresponds to Go's Req field
+  Focus narrowFocus = 9; // Corresponds to Go's NarrowFocus field
+  bool improvementProcess = 10; // Corresponds to Go's ImprovementProcess field
+  repeated string selectFields = 11; // Corresponds to Go's SelectFields field
+  Choices choices = 12; // Corresponds to Go's Choices field
+  bool voters = 13; // Corresponds to Go's Voters field
+  HashMap hashMap = 14; // Corresponds to Go's HashMap field
 }
 
 // Choices message
