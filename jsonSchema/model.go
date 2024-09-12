@@ -9,8 +9,7 @@ type Definition struct {
 	Instruction string `json:"instruction,omitempty"`
 	// Properties describes the properties of an object, if the schema type is Object.
 	Properties map[string]Definition `json:"properties"`
-	// Required specifies which properties are required, if the schema type is Object.
-	Required []string `json:"required,omitempty"`
+
 	// Items specifies which data type an array contains, if the schema type is Array.
 	Items *Definition `json:"items,omitempty"`
 	// Model
@@ -21,9 +20,7 @@ type Definition struct {
 	// SystemPrompt allows the developer to spefificy their own system prompt so the processing. It operates current at the properties level.
 	SystemPrompt *string `json:"systemPrompt,omitempty"`
 	// Req allows a developer to send out a request at a given point to ensure that additional information can be extracted from external databases
-	Req *RequestFormat
-	// NarrowFocus
-	NarrowFocus *Focus
+
 	// ImprovementProcess --> so that the user can speficy when a super high quality completion is needed and it can be improved upon
 	ImprovementProcess bool `json:"improvementProcess,omitempty"`
 	//TODO all the below fields are in BETA
@@ -33,6 +30,19 @@ type Definition struct {
 		"car.color" --> this would fetch the information from the car field and then the color field.
 		"cars.color" --> Would return the entire list of colours that have been generated so far
 	*/
+
+	//Map is used here as so that a map of values can be created and then returned -- useful in the instruction creation process -- not sure how useful it is otherwise
+	HashMap *HashMap
+
+	//the other data types that need to be filled for the object to be generated within GoR
+	Audio *Audio `json:"audio,omitempty"`
+	Image *Image `json:"image,omitempty"`
+
+	//Utility fields:
+	Req *RequestFormat
+	// NarrowFocus
+	NarrowFocus *Focus
+
 	SelectFields []string `json:"selectFields,omitempty"`
 
 	// Choices For determining which of the property fields should be generated
@@ -40,9 +50,6 @@ type Definition struct {
 
 	// Voters this is used for determining whether or not you want to have voters determine the qulaity of completions. Increases costs but improves quality. If avialible to your tier then turned on automatically.
 	Voters bool `json:"voters,omitempty"`
-
-	//Map is used here as so that a map of values can be created and then returned -- useful in the instruction creation process -- not sure how useful it is otherwise
-	HashMap *HashMap
 }
 
 type Choices struct {
