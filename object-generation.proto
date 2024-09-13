@@ -32,14 +32,15 @@ message Definition {
 message TextToSpeech {
   string model = 1; // Corresponds to Go's TextToSpeechModel field
   string stringToAudio = 2; // Corresponds to Go's StringToAudio field
+  string format = 3; // Corresponds to Go's Format field
+  string voice = 4; // Corresponds to Go's Voice field
 }
 
 // SpeechToText message
 message SpeechToText {
   string model = 1; // Corresponds to Go's SpeechToTextModel field
   bytes audioToTranscribe = 2; // Corresponds to Go's AudioToTranscribe field
-  bool toCaptions = 3; // Corresponds to Go's ToCaptions field
-  bool toString = 4; // Corresponds to Go's ToString field
+  string language = 3; // Corresponds to Go's Language field
 }
 
 

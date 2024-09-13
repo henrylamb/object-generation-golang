@@ -29,12 +29,13 @@ func ConvertProtoToModel(protoDef *pb.Definition) *jsonSchema.Definition {
 		SpeechToText: &jsonSchema.SpeechToText{
 			Model:             (*jsonSchema.SpeechToTextModel)(&protoDef.SpeechToText.Model),
 			AudioToTranscribe: protoDef.SpeechToText.AudioToTranscribe,
-			ToCaptions:        protoDef.SpeechToText.ToCaptions,
-			ToString:          protoDef.SpeechToText.ToString,
+			Language:          protoDef.SpeechToText.Language,
 		},
 		TextToSpeech: &jsonSchema.TextToSpeech{
 			Model:         (*jsonSchema.TextToSpeechModel)(&protoDef.TextToSpeech.Model),
+			Voice:         jsonSchema.Voice(protoDef.TextToSpeech.Voice),
 			StringToAudio: protoDef.TextToSpeech.StringToAudio,
+			Format:        jsonSchema.AudioFormat(protoDef.TextToSpeech.Format),
 		},
 	}
 
@@ -78,12 +79,13 @@ func ConvertModelToProto(modelDef *jsonSchema.Definition) *pb.Definition {
 		SpeechToText: &pb.SpeechToText{
 			Model:             string(*modelDef.SpeechToText.Model),
 			AudioToTranscribe: modelDef.SpeechToText.AudioToTranscribe,
-			ToCaptions:        modelDef.SpeechToText.ToCaptions,
-			ToString:          modelDef.SpeechToText.ToString,
+			Language:          modelDef.SpeechToText.Language,
 		},
 		TextToSpeech: &pb.TextToSpeech{
 			Model:         string(*modelDef.TextToSpeech.Model),
 			StringToAudio: modelDef.TextToSpeech.StringToAudio,
+			Format:        string(modelDef.TextToSpeech.Format),
+			Voice:         string(modelDef.TextToSpeech.Voice),
 		},
 	}
 
