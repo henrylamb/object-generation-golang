@@ -41,6 +41,9 @@ message SpeechToText {
   string model = 1; // Corresponds to Go's SpeechToTextModel field
   bytes audioToTranscribe = 2; // Corresponds to Go's AudioToTranscribe field
   string language = 3; // Corresponds to Go's Language field
+  string format = 4; // Corresponds to Go's Format field
+  bool toString = 5; // Corresponds to Go's ToString field
+  bool toCaptions = 6; // Corresponds to Go's ToCaptions field
 }
 
 

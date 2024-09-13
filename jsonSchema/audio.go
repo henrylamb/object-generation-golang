@@ -44,4 +44,7 @@ type SpeechToText struct {
 	Model             *SpeechToTextModel `json:"model,omitempty"`
 	AudioToTranscribe []byte             `json:"audioToTranscribe,omitempty"`
 	Language          string             `json:"language,omitempty"` //must be in the format of ISO-639-1  will default to en (english)
+	Format            AudioFormat        `json:"format,omitempty"`
+	ToString          bool               `json:"toString,omitempty"`
+	ToCaptions        bool               `json:"toCaptions,omitempty"`
 }
