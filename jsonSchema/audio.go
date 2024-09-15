@@ -9,10 +9,8 @@ const OpenAiTTS TextToSpeechModel = "tts"
 type TextToSpeech struct {
 	Model         TextToSpeechModel `json:"model,omitempty"`
 	StringToAudio string            `json:"stringToAudio,omitempty"`
-	//This defines how the audio will be returned. Either in the format of captions or just a string
-	//TODO need to alter all the GRPC and converision logic to handle this
-	Voice  Voice       `json:"voice,omitempty"`
-	Format AudioFormat `json:"format,omitempty"`
+	Voice         Voice             `json:"voice,omitempty"`
+	Format        AudioFormat       `json:"format,omitempty"`
 }
 
 type SpeechToTextModel string
