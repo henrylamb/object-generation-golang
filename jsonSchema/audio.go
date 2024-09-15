@@ -7,8 +7,8 @@ const OpenAiTTS TextToSpeechModel = "tts"
 
 // TextToSpeech the DataType to use with this type is Byte
 type TextToSpeech struct {
-	Model         *TextToSpeechModel `json:"model,omitempty"`
-	StringToAudio string             `json:"stringToAudio,omitempty"`
+	Model         TextToSpeechModel `json:"model,omitempty"`
+	StringToAudio string            `json:"stringToAudio,omitempty"`
 	//This defines how the audio will be returned. Either in the format of captions or just a string
 	//TODO need to alter all the GRPC and converision logic to handle this
 	Voice  Voice       `json:"voice,omitempty"`
@@ -41,10 +41,10 @@ const (
 
 // SpeechToText the DataType to use with this type is String
 type SpeechToText struct {
-	Model             *SpeechToTextModel `json:"model,omitempty"`
-	AudioToTranscribe []byte             `json:"audioToTranscribe,omitempty"`
-	Language          string             `json:"language,omitempty"` //must be in the format of ISO-639-1  will default to en (english)
-	Format            AudioFormat        `json:"format,omitempty"`
-	ToString          bool               `json:"toString,omitempty"`
-	ToCaptions        bool               `json:"toCaptions,omitempty"`
+	Model             SpeechToTextModel `json:"model,omitempty"`
+	AudioToTranscribe []byte            `json:"audioToTranscribe,omitempty"`
+	Language          string            `json:"language,omitempty"` //must be in the format of ISO-639-1  will default to en (english)
+	Format            AudioFormat       `json:"format,omitempty"`
+	ToString          bool              `json:"toString,omitempty"`
+	ToCaptions        bool              `json:"toCaptions,omitempty"`
 }

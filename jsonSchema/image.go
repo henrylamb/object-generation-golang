@@ -20,7 +20,7 @@ const (
 
 // Image if you want the Url of the image use the DataType String otherwise use the DataType Byte
 type Image struct {
-	Model *ImageModel `json:"model,omitempty"`
-	Size  *ImageSize  `json:"format,omitempty"`
+	Model ImageModel `json:"model,omitempty"`
+	Size  ImageSize  `json:"size,omitempty"`
 	//the below determine how the data is returned back to the user. ie how the string is returned back to them and how it should be processed
 }
