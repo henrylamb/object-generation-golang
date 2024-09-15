@@ -27,7 +27,7 @@ func ConvertProtoToModel(protoDef *pb.Definition) *jsonSchema.Definition {
 		Req:                ConvertProtoToRequestFormat(protoDef.Req),
 		Choices:            ConvertProtoToChoices(protoDef.Choices),
 		SpeechToText: &jsonSchema.SpeechToText{
-			Model:             (*jsonSchema.SpeechToTextModel)(&protoDef.SpeechToText.Model),
+			Model:             (jsonSchema.SpeechToTextModel)(protoDef.SpeechToText.Model),
 			AudioToTranscribe: protoDef.SpeechToText.AudioToTranscribe,
 			Language:          protoDef.SpeechToText.Language,
 			ToString:          protoDef.SpeechToText.ToString,
@@ -35,7 +35,7 @@ func ConvertProtoToModel(protoDef *pb.Definition) *jsonSchema.Definition {
 			Format:            jsonSchema.AudioFormat(protoDef.SpeechToText.Format),
 		},
 		TextToSpeech: &jsonSchema.TextToSpeech{
-			Model:         (*jsonSchema.TextToSpeechModel)(&protoDef.TextToSpeech.Model),
+			Model:         (jsonSchema.TextToSpeechModel)(protoDef.TextToSpeech.Model),
 			Voice:         jsonSchema.Voice(protoDef.TextToSpeech.Voice),
 			StringToAudio: protoDef.TextToSpeech.StringToAudio,
 			Format:        jsonSchema.AudioFormat(protoDef.TextToSpeech.Format),
@@ -76,11 +76,11 @@ func ConvertModelToProto(modelDef *jsonSchema.Definition) *pb.Definition {
 		Req:                ConvertModelToProtoRequestFormat(modelDef.Req),
 		Choices:            ConvertModelToProtoChoices(modelDef.Choices),
 		Image: &pb.Image{
-			Model: string(*modelDef.Image.Model),
-			Size:  string(*modelDef.Image.Size),
+			Model: string(modelDef.Image.Model),
+			Size:  string(modelDef.Image.Size),
 		},
 		SpeechToText: &pb.SpeechToText{
-			Model:             string(*modelDef.SpeechToText.Model),
+			Model:             string(modelDef.SpeechToText.Model),
 			AudioToTranscribe: modelDef.SpeechToText.AudioToTranscribe,
 			Language:          modelDef.SpeechToText.Language,
 			ToString:          modelDef.SpeechToText.ToString,
@@ -88,7 +88,7 @@ func ConvertModelToProto(modelDef *jsonSchema.Definition) *pb.Definition {
 			Format:            string(modelDef.SpeechToText.Format),
 		},
 		TextToSpeech: &pb.TextToSpeech{
-			Model:         string(*modelDef.TextToSpeech.Model),
+			Model:         string(modelDef.TextToSpeech.Model),
 			StringToAudio: modelDef.TextToSpeech.StringToAudio,
 			Format:        string(modelDef.TextToSpeech.Format),
 			Voice:         string(modelDef.TextToSpeech.Voice),
