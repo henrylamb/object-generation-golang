@@ -1,8 +1,8 @@
 # Object Generation Golang
 
-<div style="text-align: center;">
+<p align="center">
   <img src="https://i.postimg.cc/K8TjGy01/3-BD4-B9-DD-B0-B4-4033-B561-50-B5-CB6-A37-B0.jpg" alt="Alt text" width="200"/>
-</div>
+</p>
 
 This module provides a client implementation for sending JSON definitions via HTTP POST requests. It is designed to be simple and easy to integrate into your existing Go projects.
 

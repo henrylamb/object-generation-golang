@@ -25,6 +25,10 @@ const (
 	Gpt4Mini     ModelType = "Gpt4Mini"
 	Llama405b    ModelType = "Llama405"
 	Llama8b      ModelType = "Llama8b"
+	O1           ModelType = "o1-preview"
+	O1Mini       ModelType = "o1-mini"
+	GeminiFlash  ModelType = "GeminiFlash"
+	GeminiPro    ModelType = "GeminiPro"
 	Default      ModelType = "Default"
 )
 
