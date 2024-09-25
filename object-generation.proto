@@ -26,6 +26,7 @@ message Definition {
   TextToSpeech textToSpeech = 15; // Corresponds to Go's Audio field
   SpeechToText speechToText = 16; // Corresponds to Go's Speech field
   Image image = 17; // Corresponds to Go's Image field
+  SendImage sendImage = 18; // Corresponds to Go's SendImage field
 }
 
 // Audio message
@@ -70,6 +71,12 @@ message Focus {
   string prompt = 1; // Corresponds to Go's Prompt field
   repeated string fields = 2; // Corresponds to Go's Fields field
   bool keepOriginal = 3; // Corresponds to Go's KeepOriginal field
+}
+
+//SendImage message
+message SendImage {
+  string imageUrl = 1;
+  repeated bytes imagesData = 2;
 }
 
 // RequestFormat message

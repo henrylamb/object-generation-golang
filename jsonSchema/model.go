@@ -48,6 +48,9 @@ type Definition struct {
 
 	// Voters this is used for determining whether you want to have voters determine the qulaity of completions. Increases costs but improves quality. If avialible to your tier then turned on automatically.
 	Voters bool `json:"voters,omitempty"`
+
+	//Image URL --> if the LLM supports reading an image due to it being multi-model then the image URL will be passed in here
+	SendImage *SendImage `json:"sendImage,omitempty"`
 }
 
 type Choices struct {

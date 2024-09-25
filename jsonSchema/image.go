@@ -23,3 +23,8 @@ type Image struct {
 	Model ImageModel `json:"model,omitempty"`
 	Size  ImageSize  `json:"size,omitempty"`
 }
+
+type SendImage struct {
+	ImageUrl   string   `json:"imageUrl,omitempty"`
+	ImagesData [][]byte `json:"imagesData,omitempty"` //When sending multiple images take into account the model you have selected. Such that Gemini Models support multiple images whereas the Claude models only support one image at a time
+}

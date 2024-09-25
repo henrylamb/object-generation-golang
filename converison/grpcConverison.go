@@ -40,6 +40,10 @@ func ConvertProtoToModel(protoDef *pb.Definition) *jsonSchema.Definition {
 			StringToAudio: protoDef.TextToSpeech.StringToAudio,
 			Format:        jsonSchema.AudioFormat(protoDef.TextToSpeech.Format),
 		},
+		SendImage: &jsonSchema.SendImage{
+			ImageUrl:   protoDef.SendImage.ImageUrl,
+			ImagesData: protoDef.SendImage.ImagesData,
+		},
 	}
 
 	for key, protoProperty := range protoDef.Properties {
@@ -92,6 +96,10 @@ func ConvertModelToProto(modelDef *jsonSchema.Definition) *pb.Definition {
 			StringToAudio: modelDef.TextToSpeech.StringToAudio,
 			Format:        string(modelDef.TextToSpeech.Format),
 			Voice:         string(modelDef.TextToSpeech.Voice),
+		},
+		SendImage: &pb.SendImage{
+			ImageUrl:   modelDef.SendImage.ImageUrl,
+			ImagesData: modelDef.SendImage.ImagesData,
 		},
 	}
 
