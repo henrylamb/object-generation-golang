@@ -41,7 +41,7 @@ func ConvertProtoToModel(protoDef *pb.Definition) *jsonSchema.Definition {
 			Format:        jsonSchema.AudioFormat(protoDef.TextToSpeech.Format),
 		},
 		SendImage: &jsonSchema.SendImage{
-			ImageUrl:   protoDef.SendImage.ImageUrl,
+			ImageUrls:  protoDef.SendImage.ImageUrls,
 			ImagesData: protoDef.SendImage.ImagesData,
 		},
 	}
@@ -98,7 +98,7 @@ func ConvertModelToProto(modelDef *jsonSchema.Definition) *pb.Definition {
 			Voice:         string(modelDef.TextToSpeech.Voice),
 		},
 		SendImage: &pb.SendImage{
-			ImageUrl:   modelDef.SendImage.ImageUrl,
+			ImageUrls:  modelDef.SendImage.ImageUrls,
 			ImagesData: modelDef.SendImage.ImagesData,
 		},
 	}

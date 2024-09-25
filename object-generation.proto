@@ -75,7 +75,7 @@ message Focus {
 
 //SendImage message
 message SendImage {
-  string imageUrl = 1;
+  repeated string imageUrls = 1;
   repeated bytes imagesData = 2;
 }
 
