@@ -75,8 +75,7 @@ message Focus {
 
 //SendImage message
 message SendImage {
-  repeated string imageUrls = 1;
-  repeated bytes imagesData = 2;
+  repeated bytes imagesData = 1;
 }
 
 // RequestFormat message
