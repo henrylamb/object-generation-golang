@@ -132,20 +132,60 @@ func IntegrationTestConstructor(assumption string, codePath string, model jsonSc
 				Instruction: fmt.Sprintf("Evaluate the security of the integrated code by analyzing vulnerabilities categorized by severity level across the different languages. \n\n%s", assumption),
 				Properties: map[string]jsonSchema.Definition{
 					"lowSeverity": {
-						Type:        jsonSchema.Number,
-						Instruction: "Identify the number of low-severity security vulnerabilities found in the integrated code.",
+						Type: jsonSchema.Number,
+						Instruction: `Identify the number of low-severity security vulnerabilities found in the integrated code. 
+	Low-severity vulnerabilities are typically minor issues that have a limited impact on the system's overall security posture. 
+	These issues often represent small misconfigurations, or minor information exposures that do not pose an immediate threat but may 
+	indicate areas for improvement.
+
+	Examples of low-severity vulnerabilities:
+	- Minor input validation issues that do not lead to security bypass (related to OWASP A07:2021 - Identification and Authentication Failures).
+	- Weak or overly verbose error messages that could give attackers minor information (related to OWASP A09:2021 - Security Logging and Monitoring Failures).
+	- Insufficiently strict Content Security Policies (CSP) that don't create immediate risks but could be exploited under certain conditions (related to OWASP A05:2021 - Security Misconfiguration).
+
+	Only report observable, low-risk issues. Return a value of 0 if none are found.`,
 					},
 					"mediumSeverity": {
-						Type:        jsonSchema.Number,
-						Instruction: "Identify the number of medium-severity security vulnerabilities found in the integrated code.",
+						Type: jsonSchema.Number,
+						Instruction: `Identify the number of medium-severity security vulnerabilities found in the integrated code. 
+	Medium-severity vulnerabilities represent issues that could be exploited in more specific or controlled circumstances, 
+	and may allow an attacker to gain some unauthorized access or leakage of information. These vulnerabilities often require 
+	a combination of flaws to be exploited or depend on certain configurations.
+
+	Examples of medium-severity vulnerabilities:
+	- Insecure Direct Object References (related to OWASP A01:2021 - Broken Access Control) that allow limited access to unauthorized resources.
+	- Missing or improper authentication methods for non-critical functionality (related to OWASP A07:2021 - Identification and Authentication Failures).
+	- Storing sensitive information in non-secure ways that is hard to access but still could be leaked in certain conditions (related to OWASP A03:2021 - Injection).
+
+	Only report actual, exploitable medium-severity issues. Return 0 if no such vulnerabilities are found.`,
 					},
 					"highSeverity": {
-						Type:        jsonSchema.Number,
-						Instruction: "Identify the number of high-severity security vulnerabilities found in the integrated code.",
+						Type: jsonSchema.Number,
+						Instruction: `Identify the number of high-severity security vulnerabilities found in the integrated code. 
+	High-severity vulnerabilities can result in significant impacts, such as unauthorized access to critical resources or the ability to 
+	manipulate sensitive data. These vulnerabilities typically require immediate attention as they can lead to data breaches or other severe 
+	consequences if exploited.
+
+	Examples of high-severity vulnerabilities:
+	- SQL injection vulnerabilities that allow attackers to execute arbitrary queries on the database (related to OWASP A03:2021 - Injection).
+	- Missing access control checks on sensitive operations (related to OWASP A01:2021 - Broken Access Control).
+	- Exposing sensitive data, such as passwords or personal information, in unencrypted storage or over insecure channels (related to OWASP A02:2021 - Cryptographic Failures).
+
+	These vulnerabilities pose a clear risk to data integrity or confidentiality. Only report actual high-severity vulnerabilities, and return a value of 0 if none are present.`,
 					},
 					"criticalSeverity": {
-						Type:        jsonSchema.Number,
-						Instruction: "Identify the number of critical-severity security vulnerabilities found in the integrated code.",
+						Type: jsonSchema.Number,
+						Instruction: `Identify the number of critical-severity security vulnerabilities found in the integrated code. 
+	Critical-severity vulnerabilities are the most severe and represent issues that, if exploited, could allow an attacker to completely compromise the system, 
+	execute arbitrary code, or perform any action within the system with full privileges. These are typically vulnerabilities that must be resolved immediately 
+	to prevent catastrophic consequences.
+
+	Examples of critical-severity vulnerabilities:
+	- Remote code execution vulnerabilities that allow attackers to run arbitrary commands on the system (related to OWASP A06:2021 - Vulnerable and Outdated Components or A10:2021 - Server-Side Request Forgery).
+	- Authentication bypasses that allow attackers full access to the system without valid credentials (related to OWASP A01:2021 - Broken Access Control).
+	- Unrestricted file uploads that could lead to server compromise (related to OWASP A08:2021 - Software and Data Integrity Failures).
+
+	Only report vulnerabilities of this severity if they are directly observable in the code. Return 0 if no critical vulnerabilities are found.`,
 					},
 				},
 			},

@@ -1,19 +1,20 @@
-package testingLite
+package converison
 
 import (
 	"encoding/json"
 	"github.com/henrylamb/object-generation-golang/client"
 	"github.com/henrylamb/object-generation-golang/jsonSchema"
+	"github.com/henrylamb/object-generation-golang/testingLite"
 	"os"
 	"testing"
 )
 
-func TestUnitTestConstructor(t *testing.T) {
+func TestClient(t *testing.T) {
 	// Create a temporary directory
 	c := client.NewClient(os.Getenv("MULTIPLE_PASSWORD"), "http://localhost:2008")
 
 	//construct single test
-	definition, code, err := SingleUnitTestWrapper(WorkingAssumption, "./unitConstructor.go", jsonSchema.Gpt4)
+	definition, code, err := testingLite.SingleUnitTestWrapper(testingLite.WorkingAssumption, "./requestFormat.go", jsonSchema.Gpt4)
 	if err != nil {
 		t.Errorf("Error constructing test: %v", err)
 	}
@@ -24,15 +25,15 @@ func TestUnitTestConstructor(t *testing.T) {
 	}
 
 	//unmarshal the response
-	testVal := &CodeTest{}
+	testVal := &testingLite.CodeTest{}
 	err = json.Unmarshal(response.Data, testVal)
 	if err != nil {
 		t.Errorf("Error unmarshalling response: %v", err)
 	}
 
 	//Compare the values
-	if !TestComparison(testVal, &ModerateTesting) {
-		t.Errorf("Failed to meet all the requirements. Expected Minimum: %v | Got: %v", ModerateTesting.Print(), testVal.Print())
+	if !testingLite.TestComparison(testVal, &testingLite.ModerateTesting) {
+		t.Errorf("Failed to meet all the requirements. Expected Minimum: %v | Got: %v", testingLite.ModerateTesting.Print(), testVal.Print())
 		t.Errorf("Recommendation on how to fix this test: %v", testVal.Review.Feedback)
 	}
 }

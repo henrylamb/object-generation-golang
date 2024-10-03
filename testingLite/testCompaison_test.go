@@ -13,7 +13,7 @@ func TestTestComparison(t *testing.T) {
 	c := client.NewClient(os.Getenv("MULTIPLE_PASSWORD"), "http://localhost:2008")
 
 	//construct single test
-	definition, code, err := SingleUnitTestWrapper(WorkingAssumption, "./testComparison.go", jsonSchema.Gpt3)
+	definition, code, err := SingleUnitTestWrapper(WorkingAssumption, "./testComparison.go", jsonSchema.Gpt4)
 	if err != nil {
 		t.Errorf("Error constructing test: %v", err)
 	}
@@ -32,7 +32,7 @@ func TestTestComparison(t *testing.T) {
 
 	//Compare the values
 	if !TestComparison(testVal, &ModerateTesting) {
-		t.Errorf("Failed to meet all the requirements. Expected Minimum: %v | Got: %v", ModerateTesting, *testVal)
+		t.Errorf("Failed to meet all the requirements. Expected Minimum: %v | Got: %v", ModerateTesting.Print(), testVal.Print())
 		t.Errorf("Recommendation on how to fix this test: %v", testVal.Review.Feedback)
 	}
 }
