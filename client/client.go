@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/henrylamb/object-generation-golang/jsonSchema"
+	"io"
 	"net/http"
 )
 
@@ -58,7 +59,12 @@ func (c *Client) SendRequest(prompt string, definition *jsonSchema.Definition) (
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err = Body.Close()
+		if err != nil {
+			fmt.Println("Error closing body")
+		}
+	}(resp.Body)
 
 	// Check for non-200 status codes
 	if resp.StatusCode != http.StatusOK {
@@ -67,7 +73,7 @@ func (c *Client) SendRequest(prompt string, definition *jsonSchema.Definition) (
 
 	// Decode the response JSON into the Response struct
 	var response Response
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		return nil, fmt.Errorf("error decoding response: %v", err)
 	}
 
