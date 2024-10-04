@@ -1,6 +1,6 @@
 package testingLite
 
-// these values are the thresholds which can be used as a defualt for your code to pass their tests
+// / These values are the thresholds which can be used as a default for your code to pass their tests
 var (
 	// LenientTesting represents the most relaxed evaluation thresholds
 	LenientTesting = CodeTest{
@@ -11,6 +11,13 @@ var (
 			MediumSeverity:   5,
 			HighSeverity:     3,
 			CriticalSeverity: 1,
+		},
+		Solid: &Solid{
+			SingleResponsibilityScore: 50,
+			OpenClosedScore:           50,
+			LiskovSubstitutionScore:   50,
+			InterfaceSegregationScore: 50,
+			DependencyInversionScore:  50,
 		},
 	}
 
@@ -24,6 +31,13 @@ var (
 			HighSeverity:     1,
 			CriticalSeverity: 0,
 		},
+		Solid: &Solid{
+			SingleResponsibilityScore: 70,
+			OpenClosedScore:           70,
+			LiskovSubstitutionScore:   70,
+			InterfaceSegregationScore: 70,
+			DependencyInversionScore:  70,
+		},
 	}
 
 	// StrictTesting represents the most stringent evaluation with strict thresholds
@@ -35,6 +49,13 @@ var (
 			MediumSeverity:   1,
 			HighSeverity:     0,
 			CriticalSeverity: 0,
+		},
+		Solid: &Solid{
+			SingleResponsibilityScore: 90,
+			OpenClosedScore:           90,
+			LiskovSubstitutionScore:   90,
+			InterfaceSegregationScore: 90,
+			DependencyInversionScore:  90,
 		},
 	}
 )

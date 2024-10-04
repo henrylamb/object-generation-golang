@@ -58,7 +58,7 @@ func SendRequest(def *jsonSchema.Definition, currentGen map[string]any) *Res {
 		return nil
 	}
 
-	value, err := ExtractValue(request)
+	value, err := extractValue(request)
 	if err != nil {
 		log.Println("failed to extract value", err)
 		return nil

@@ -8,12 +8,12 @@ import (
 	"testing"
 )
 
-func TestTestComparison(t *testing.T) {
+func TestDefaultLanguageExtractor_ExtractLanguage(t *testing.T) {
 	// Create a temporary directory
 	c := client.NewDefaultClient(os.Getenv("MULTIPLE_PASSWORD"), "http://localhost:2008")
 
 	processor := NewDefaultCodeProcessor()
-	codePath := "./testComparison.go"
+	codePath := "./languageExtractor.go"
 
 	definition, code, err := TestConstructor(WorkingAssumption, codePath, jsonSchema.Gpt4Mini, processor)
 	if err != nil {

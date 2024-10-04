@@ -7,6 +7,7 @@ import (
 
 type CodeTest struct {
 	CodeQuality          int       `json:"codeQuality"`
+	Solid                *Solid    `json:"solid"`
 	Review               *Review   `json:"review"`
 	Security             *Security `json:"security"`
 	ProbabilityOfSuccess int       `json:"probabilityOfSuccess"`
@@ -21,6 +22,15 @@ type Security struct {
 
 type Review struct {
 	Feedback string `json:"feedback"`
+}
+
+// Solid struct representing the five SOLID principles.
+type Solid struct {
+	SingleResponsibilityScore int `json:"singleResponsibilityScore"` // SRP - Single Responsibility Principle
+	OpenClosedScore           int `json:"openClosedScore"`           // OCP - Open/Closed Principle
+	LiskovSubstitutionScore   int `json:"liskovSubstitutionScore"`   // LSP - Liskov Substitution Principle
+	InterfaceSegregationScore int `json:"interfaceSegregationScore"` // ISP - Interface Segregation Principle
+	DependencyInversionScore  int `json:"dependencyInversionScore"`  // DIP - Dependency Inversion Principle
 }
 
 // Print method for CodeTest struct (returns a string)

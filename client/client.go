@@ -1,81 +1,49 @@
 package client
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"github.com/henrylamb/object-generation-golang/jsonSchema"
-	"io"
 	"net/http"
 )
 
+// Client responsible for making HTTP requests
 type Client struct {
-	Password string
-	BaseURL  string
+	Password   string
+	BaseURL    string
+	HttpClient HttpClient
 }
 
-// NewClient here the password that you would set in the request to ensure secure communication between servers. This value must be set as an environment variable as MULTIPLE_PASSWORD
-func NewClient(password, url string) *Client {
+// HttpClient interface to abstract HTTP operations
+type HttpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+func NewDefaultClient(password, url string) *Client {
+	return NewClient(password, url, &http.Client{})
+}
+
+// NewClient initializes a new Client instance
+func NewClient(password, url string, httpClient HttpClient) *Client {
 	return &Client{
-		Password: password,
-		BaseURL:  url,
+		Password:   password,
+		BaseURL:    url,
+		HttpClient: httpClient,
 	}
 }
 
-func (c *Client) SendHttpRequest(prompt string, definition *jsonSchema.Definition) (*http.Response, error) {
-	url := c.BaseURL
+// SendRequest sends the prompt and definition, and returns the parsed response
+func (c *Client) SendRequest(prompt string, definition *jsonSchema.Definition) (*Response, error) {
+	requestSender := NewRequestSender(c)
+	responseProcessor := NewResponseProcessor()
 
-	requestBody := RequestBody{
+	requestBody := &RequestBody{
 		Prompt:     prompt,
 		Definition: definition,
 	}
 
-	jsonData, err := json.Marshal(requestBody)
-	if err != nil {
-		return nil, fmt.Errorf("error marshalling definition: %v", err)
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/objectGen", url), bytes.NewBuffer(jsonData))
-	if err != nil {
-		return nil, fmt.Errorf("error creating request: %v", err)
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.Password)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("error sending request: %v", err)
-	}
-
-	return resp, nil
-}
-
-// Wrapper function to process the response and return the custom Response type
-func (c *Client) SendRequest(prompt string, definition *jsonSchema.Definition) (*Response, error) {
-	// Send the request
-	resp, err := c.SendHttpRequest(prompt, definition)
+	resp, err := requestSender.SendRequestBody(requestBody)
 	if err != nil {
 		return nil, err
 	}
-	defer func(Body io.ReadCloser) {
-		err = Body.Close()
-		if err != nil {
-			fmt.Println("Error closing body")
-		}
-	}(resp.Body)
 
-	// Check for non-200 status codes
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("received non-200 response code: %d", resp.StatusCode)
-	}
-
-	// Decode the response JSON into the Response struct
-	var response Response
-	if err = json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, fmt.Errorf("error decoding response: %v", err)
-	}
-
-	return &response, nil
+	return responseProcessor.ProcessResponse(resp)
 }

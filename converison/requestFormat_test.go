@@ -11,10 +11,12 @@ import (
 
 func TestClient(t *testing.T) {
 	// Create a temporary directory
-	c := client.NewClient(os.Getenv("MULTIPLE_PASSWORD"), "http://localhost:2008")
+	c := client.NewDefaultClient(os.Getenv("MULTIPLE_PASSWORD"), "http://localhost:2008")
 
-	//construct single test
-	definition, code, err := testingLite.SingleUnitTestWrapper(testingLite.WorkingAssumption, "./requestFormat.go", jsonSchema.Gpt4)
+	processor := testingLite.NewDefaultCodeProcessor()
+	codePath := "./requestFormat.go"
+
+	definition, code, err := testingLite.TestConstructor(testingLite.WorkingAssumption, codePath, jsonSchema.Gpt4, processor)
 	if err != nil {
 		t.Errorf("Error constructing test: %v", err)
 	}

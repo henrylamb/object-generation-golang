@@ -9,11 +9,12 @@ import (
 )
 
 func TestIntegrationTestConstructor(t *testing.T) {
-	// Create a temporary directory
-	c := client.NewClient(os.Getenv("MULTIPLE_PASSWORD"), "http://localhost:2008")
+	c := client.NewDefaultClient(os.Getenv("MULTIPLE_PASSWORD"), "http://localhost:2008")
 
-	//construct single test
-	definition, code, err := SingleUnitTestWrapper(WorkingAssumption, "./integrationConstructor.go", jsonSchema.Gpt4)
+	processor := NewDefaultCodeProcessor()
+	codePath := "./integrationConstructor.go"
+
+	definition, code, err := TestConstructor(WorkingAssumption, codePath, jsonSchema.Gpt4Mini, processor)
 	if err != nil {
 		t.Errorf("Error constructing test: %v", err)
 	}

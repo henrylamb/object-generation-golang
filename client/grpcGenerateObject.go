@@ -12,7 +12,7 @@ import (
 // SendRequestToServer sends a request to the gRPC server with authorization headers
 func (c *Client) GrpcGenerateObject(prompt string, definition *pb.Definition) (*Response, error) {
 	// Set up a connection to the gRPC server
-	conn, err := grpc.Dial(c.BaseURL, grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.NewClient(c.BaseURL, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to server: %v", err)
 	}
