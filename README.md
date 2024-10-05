@@ -44,8 +44,9 @@ Start by defining a `Client` struct that will manage the API connection.
 
 ```go
 type Client struct {
-	Password  string // APIKey is the authentication token for the API.
-	BaseURL string // BaseURL is the base endpoint for API requests.
+    Password   string
+    BaseURL    string
+    HttpClient HttpClient
 }
 ```
 
@@ -54,10 +55,16 @@ type Client struct {
 Create a constructor function `NewClient` to initialize a new client instance with the API key and base URL.
 
 ```go
-func NewClient(password, url string) *Client {
+func NewDefaultClient(password, url string) *Client {
+	return NewClient(password, url, &http.Client{})
+}
+
+// NewClient initializes a new Client instance
+func NewClient(password, url string, httpClient HttpClient) *Client {
 	return &Client{
-		Password:  password,
-		BaseURL: url, // Replace with your API's base URL
+		Password:   password,
+		BaseURL:    url,
+		HttpClient: httpClient,
 	}
 }
 ```
@@ -67,26 +74,22 @@ func NewClient(password, url string) *Client {
 Implement a method `SendRequest` on the `Client` struct to send a POST request with a JSON-encoded definition.
 
 ```go
-func (c *Client) SendRequest(prompt string, definition *Definition) (*Response, error) {
-	// Send the request
-	resp, err := c.SendHttpRequest(prompt, definition)
+// SendRequest sends the prompt and definition, and returns the parsed response
+func (c *Client) SendRequest(prompt string, definition *jsonSchema.Definition) (*Response, error) {
+	requestSender := NewRequestSender(c)
+	responseProcessor := NewResponseProcessor()
+
+	requestBody := &RequestBody{
+		Prompt:     prompt,
+		Definition: definition,
+	}
+
+	resp, err := requestSender.SendRequestBody(requestBody)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	// Check for non-200 status codes
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("received non-200 response code: %d", resp.StatusCode)
-	}
-
-	// Decode the response JSON into the Response struct
-	var response Response
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, fmt.Errorf("error decoding response: %v", err)
-	}
-
-	return &response, nil
+	return responseProcessor.ProcessResponse(resp)
 }
 ```
 
@@ -100,15 +103,12 @@ func ExampleUsage() {
 	// Initialize a new client with your API key
 	url   := "your-container-url"
 	password := "your-password"
-	client   := NewClient(password, url)
+	c   := client.NewDefaultClient(password, url)
 
 	// Define a sample definition
 	definition := &Definition{
 		Type:        "Object",
 		Instruction: "Sample instruction for the definition.",
-		Req: &RequestFormat{
-			URL: "https://api.example.com/process",
-		},
 		Properties: map[string]Definition{
 			"property1": {Type: "String", Instruction: "Description of property1"},
 			"property2": {Type: "Number", Instruction: "Description of property2"},
@@ -116,7 +116,7 @@ func ExampleUsage() {
 	}
 
 	// Send the request
-	resp, err := client.SendRequest(definition)
+	resp, err := c.SendRequest(definition)
 	if err != nil {
 		fmt.Printf("Error sending request: %v\n", err)
 		return
