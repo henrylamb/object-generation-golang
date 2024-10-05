@@ -36,4 +36,9 @@ func TestIntegrationTestConstructor(t *testing.T) {
 		t.Errorf("Failed to meet all the requirements. Expected Minimum: %v | Got: %v", ModerateTesting.Print(), testVal.Print())
 		t.Errorf("Recommendation on how to fix this test: %v", testVal.Review.Feedback)
 	}
+	// Grade based on different testing levels
+	grade := EvaluateGrade(testVal)
+
+	// Print the results with verbose mode
+	PrintResult(grade, testVal, false)
 }

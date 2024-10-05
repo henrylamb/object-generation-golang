@@ -7,34 +7,37 @@ import (
 	"net/http"
 )
 
-// RequestSender responsible for creating and sending HTTP requests
-type RequestSender struct {
-	client *Client
-}
+// DefaultRequestSender is a default implementation of RequestSender
+type DefaultRequestSender struct{}
 
-// NewRequestSender initializes a new RequestSender
-func NewRequestSender(client *Client) *RequestSender {
-	return &RequestSender{client: client}
+// NewDefaultRequestSender initializes a new DefaultRequestSender
+func NewDefaultRequestSender() *DefaultRequestSender {
+	return &DefaultRequestSender{}
 }
 
 // SendRequestBody sends a JSON request and returns a response
-func (rs *RequestSender) SendRequestBody(requestBody *RequestBody) (*http.Response, error) {
-	url := rs.client.BaseURL + "/api/objectGen"
+func (rs *DefaultRequestSender) SendRequestBody(baseURL, token string, requestBody *RequestBody) (*http.Response, error) {
+	url := baseURL + "/api/objectGen"
 
+	// Serialize the request body to JSON
 	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
-		return nil, fmt.Errorf("error marshalling definition: %v", err)
+		return nil, fmt.Errorf("error marshalling request body: %v", err)
 	}
 
+	// Create an HTTP request
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
+	// Set headers
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+rs.client.Password)
+	req.Header.Set("Authorization", "Bearer "+token)
 
-	resp, err := rs.client.HttpClient.Do(req)
+	// Send the request and return the response
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}

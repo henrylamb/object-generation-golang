@@ -11,8 +11,8 @@ import (
 type ResponseProcessor struct{}
 
 // NewResponseProcessor initializes a new ResponseProcessor
-func NewResponseProcessor() *ResponseProcessor {
-	return &ResponseProcessor{}
+func NewResponseProcessor() ResponseProcessor {
+	return ResponseProcessor{}
 }
 
 // ProcessResponse processes the response and returns the parsed Response struct

@@ -38,4 +38,8 @@ func TestExtracted(t *testing.T) {
 		t.Errorf("Failed to meet all the requirements. Expected Minimum: %v | Got: %v", testingLite.ModerateTesting.Print(), testVal.Print())
 		t.Errorf("Recommendation on how to fix this test: %v", testVal.Review.Feedback)
 	}
+	grade := testingLite.EvaluateGrade(testVal)
+
+	// Print the results with verbose mode
+	testingLite.PrintResult(grade, testVal, false)
 }

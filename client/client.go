@@ -5,11 +5,13 @@ import (
 	"net/http"
 )
 
-// Client responsible for making HTTP requests
+// Client responsible for holding base configuration and dependencies
 type Client struct {
-	Password   string
-	BaseURL    string
-	HttpClient HttpClient
+	Password          string
+	BaseURL           string
+	HttpClient        HttpClient
+	RequestSender     RequestSender
+	ResponseProcessor ResponseProcessor
 }
 
 // HttpClient interface to abstract HTTP operations
@@ -17,33 +19,35 @@ type HttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-func NewDefaultClient(password, url string) *Client {
-	return NewClient(password, url, &http.Client{})
+// RequestSender interface abstracts request sending behavior
+type RequestSender interface {
+	SendRequestBody(url, token string, requestBody *RequestBody) (*http.Response, error)
 }
 
-// NewClient initializes a new Client instance
-func NewClient(password, url string, httpClient HttpClient) *Client {
+// NewDefaultClient initializes a new Client instance with default implementations
+func NewDefaultClient(password, url string) *Client {
 	return &Client{
-		Password:   password,
-		BaseURL:    url,
-		HttpClient: httpClient,
+		Password:          password,
+		BaseURL:           url,
+		HttpClient:        &http.Client{},
+		RequestSender:     NewDefaultRequestSender(),
+		ResponseProcessor: NewResponseProcessor(),
 	}
 }
 
 // SendRequest sends the prompt and definition, and returns the parsed response
 func (c *Client) SendRequest(prompt string, definition *jsonSchema.Definition) (*Response, error) {
-	requestSender := NewRequestSender(c)
-	responseProcessor := NewResponseProcessor()
-
 	requestBody := &RequestBody{
 		Prompt:     prompt,
 		Definition: definition,
 	}
 
-	resp, err := requestSender.SendRequestBody(requestBody)
+	// Use the RequestSender to send the request
+	resp, err := c.RequestSender.SendRequestBody(c.BaseURL, c.Password, requestBody)
 	if err != nil {
 		return nil, err
 	}
 
-	return responseProcessor.ProcessResponse(resp)
+	// Process the response
+	return c.ResponseProcessor.ProcessResponse(resp)
 }

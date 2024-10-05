@@ -59,6 +59,17 @@ func (ct *CodeTest) Print() string {
 		sb.WriteString("  Security: <nil>\n")
 	}
 
+	if ct.Solid != nil {
+		sb.WriteString("  SOLID Scores:\n")
+		sb.WriteString(fmt.Sprintf("    Single Responsibility Principle: %d\n", ct.Solid.SingleResponsibilityScore))
+		sb.WriteString(fmt.Sprintf("    Open/Closed Principle: %d\n", ct.Solid.OpenClosedScore))
+		sb.WriteString(fmt.Sprintf("    Liskov Substitution Principle: %d\n", ct.Solid.LiskovSubstitutionScore))
+		sb.WriteString(fmt.Sprintf("    Interface Segregation Principle: %d\n", ct.Solid.InterfaceSegregationScore))
+		sb.WriteString(fmt.Sprintf("    Dependency Inversion Principle: %d\n", ct.Solid.DependencyInversionScore))
+	} else {
+		sb.WriteString("  SOLID Scores: <nil>\n")
+	}
+
 	// Return the built string
 	return sb.String()
 }

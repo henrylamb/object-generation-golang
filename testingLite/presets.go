@@ -3,6 +3,23 @@ package testingLite
 // / These values are the thresholds which can be used as a default for your code to pass their tests
 var (
 	// LenientTesting represents the most relaxed evaluation thresholds
+	KindTesting = CodeTest{
+		CodeQuality:          50,
+		ProbabilityOfSuccess: 40,
+		Security: &Security{
+			LowSeverity:      15,
+			MediumSeverity:   10,
+			HighSeverity:     5,
+			CriticalSeverity: 2,
+		},
+		Solid: &Solid{
+			SingleResponsibilityScore: 50,
+			OpenClosedScore:           50,
+			LiskovSubstitutionScore:   50,
+			InterfaceSegregationScore: 50,
+			DependencyInversionScore:  50,
+		},
+	}
 	LenientTesting = CodeTest{
 		CodeQuality:          60,
 		ProbabilityOfSuccess: 50,
