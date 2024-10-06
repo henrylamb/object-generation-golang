@@ -4,14 +4,18 @@ import "fmt"
 
 // evaluateGrade assigns a grade (A, B, C, D) based on the thresholds and test scores
 func EvaluateGrade(testVal *CodeTest) string {
-	if TestComparison(testVal, &StrictTesting) {
+	if TestComparison(testVal, &ExtremeTesting) {
+		return "A*"
+	} else if TestComparison(testVal, &StrictTesting) {
 		return "A"
 	} else if TestComparison(testVal, &ModerateTesting) {
 		return "B"
 	} else if TestComparison(testVal, &LenientTesting) {
 		return "C"
-	} else {
+	} else if TestComparison(testVal, &KindTesting) {
 		return "D"
+	} else {
+		return "F"
 	}
 }
 

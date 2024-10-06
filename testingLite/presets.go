@@ -13,11 +13,11 @@ var (
 			CriticalSeverity: 2,
 		},
 		Solid: &Solid{
-			SingleResponsibilityScore: 50,
-			OpenClosedScore:           50,
-			LiskovSubstitutionScore:   50,
-			InterfaceSegregationScore: 50,
-			DependencyInversionScore:  50,
+			SingleResponsibilityScore: 30,
+			OpenClosedScore:           30,
+			LiskovSubstitutionScore:   30,
+			InterfaceSegregationScore: 30,
+			DependencyInversionScore:  30,
 		},
 	}
 	LenientTesting = CodeTest{
@@ -68,11 +68,30 @@ var (
 			CriticalSeverity: 0,
 		},
 		Solid: &Solid{
-			SingleResponsibilityScore: 90,
-			OpenClosedScore:           90,
-			LiskovSubstitutionScore:   90,
-			InterfaceSegregationScore: 90,
-			DependencyInversionScore:  90,
+			SingleResponsibilityScore: 80,
+			OpenClosedScore:           80,
+			LiskovSubstitutionScore:   80,
+			InterfaceSegregationScore: 80,
+			DependencyInversionScore:  80,
+		},
+	}
+
+	// StrictTesting represents the most stringent evaluation with strict thresholds
+	ExtremeTesting = CodeTest{
+		CodeQuality:          90,
+		ProbabilityOfSuccess: 95,
+		Security: &Security{
+			LowSeverity:      1,
+			MediumSeverity:   0,
+			HighSeverity:     0,
+			CriticalSeverity: 0,
+		},
+		Solid: &Solid{
+			SingleResponsibilityScore: 95,
+			OpenClosedScore:           95,
+			LiskovSubstitutionScore:   95,
+			InterfaceSegregationScore: 95,
+			DependencyInversionScore:  95,
 		},
 	}
 )
