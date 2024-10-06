@@ -15,7 +15,7 @@ func TestTestComparison(t *testing.T) {
 	processor := NewDefaultCodeProcessor()
 	codePath := "./testComparison.go"
 
-	definition, code, err := TestConstructor(WorkingAssumption, codePath, jsonSchema.Gpt4Mini, processor)
+	definition, code, err := TestConstructor(WorkingAssumption, codePath, jsonSchema.Gpt4, processor)
 	if err != nil {
 		t.Errorf("Error constructing test: %v", err)
 	}

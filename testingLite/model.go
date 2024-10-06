@@ -21,7 +21,7 @@ type Security struct {
 }
 
 type Review struct {
-	Feedback string `json:"feedback"`
+	Feedback string `json:"feedback"` //this is the feedback from a review that an LLM will be providing as to tell the developer what they need to improve
 }
 
 // Solid struct representing the five SOLID principles.

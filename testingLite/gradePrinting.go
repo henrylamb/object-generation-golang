@@ -2,7 +2,6 @@ package testingLite
 
 import "fmt"
 
-// evaluateGrade assigns a grade (A, B, C, D) based on the thresholds and test scores
 func EvaluateGrade(testVal *CodeTest) string {
 	if TestComparison(testVal, &ExtremeTesting) {
 		return "A*"

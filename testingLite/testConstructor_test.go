@@ -12,7 +12,7 @@ func TestIntegrationTestConstructor(t *testing.T) {
 	c := client.NewDefaultClient(os.Getenv("MULTIPLE_PASSWORD"), "http://localhost:2008")
 
 	processor := NewDefaultCodeProcessor()
-	codePath := "./integrationConstructor.go"
+	codePath := "./testConstructor.go"
 
 	definition, code, err := TestConstructor(WorkingAssumption, codePath, jsonSchema.Gpt4Mini, processor)
 	if err != nil {

@@ -15,7 +15,7 @@ func TestTestingLitePackage(t *testing.T) {
 	processor := NewDefaultCodeProcessor()
 	codePath := "./"
 
-	definition, code, err := TestConstructor(WorkingAssumption, codePath, jsonSchema.GeminiFlash, processor)
+	definition, code, err := TestConstructor(WorkingAssumption, codePath, jsonSchema.Gpt4, processor)
 	if err != nil {
 		t.Errorf("Error constructing test: %v", err)
 	}

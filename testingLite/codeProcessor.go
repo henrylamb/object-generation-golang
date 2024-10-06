@@ -8,21 +8,33 @@ import (
 
 // CodeProcessor handles the responsibility of processing code and generating prompts
 type CodeProcessor interface {
-	ProcessCode(assumption string, fileContents map[string]string, model jsonSchema.ModelType) (*jsonSchema.Definition, string, error)
+	ProcessCode(assumption string, filePath string, model jsonSchema.ModelType) (*jsonSchema.Definition, string, error)
 }
 
-type DefaultCodeProcessor struct{}
+type DefaultCodeProcessor struct {
+	Extractor     LanguageExtractor
+	FileProcessor FileProcessor
+}
 
 func NewDefaultCodeProcessor() *DefaultCodeProcessor {
-	return &DefaultCodeProcessor{}
+	return &DefaultCodeProcessor{
+		Extractor:     NewDefaultLanguageExtractor(),
+		FileProcessor: FileProcessor{},
+	}
 }
 
-func (p *DefaultCodeProcessor) ProcessCode(assumption string, fileContents map[string]string, model jsonSchema.ModelType) (*jsonSchema.Definition, string, error) {
+func (p *DefaultCodeProcessor) ProcessCode(assumption string, filePath string, model jsonSchema.ModelType) (*jsonSchema.Definition, string, error) {
 	languageSet := map[string]struct{}{}
 	var combinedCodeText strings.Builder
 
+	//extract file contents
+	fileContents, err := p.FileProcessor.extractFileContents(filePath)
+	if err != nil {
+		return nil, "", fmt.Errorf("Error processing code path: %s", err.Error())
+	}
+
 	for fileName, codeText := range fileContents {
-		language := extractLanguage(fileName)
+		language := p.Extractor.ExtractLanguage(fileName)
 
 		if language != "Unknown" {
 			languageSet[language] = struct{}{}
@@ -62,6 +74,7 @@ func (p *DefaultCodeProcessor) ProcessCode(assumption string, fileContents map[s
 			"review": {
 				Type:         jsonSchema.Object,
 				SystemPrompt: &systemPromptReview,
+				Model:        model,
 				Instruction:  fmt.Sprintf("Provide a detailed review of the code, including key strengths and weaknesses. \n\n %s", assumption),
 				Properties: map[string]jsonSchema.Definition{
 					"feedback": {
@@ -143,6 +156,7 @@ func (p *DefaultCodeProcessor) ProcessCode(assumption string, fileContents map[s
 			"solid": {
 				Type:         jsonSchema.Object,
 				Instruction:  fmt.Sprintf("Evaluate the code based on the five SOLID principles (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion). Rate each principle from 0 to 100, where 10 is poor adherence and 90 is excellent adherence. \n\n %s", assumption),
+				Model:        model,
 				SystemPrompt: &systemPromptGeneral,
 				Properties: map[string]jsonSchema.Definition{
 					"singleResponsibilityScore": {
