@@ -15,41 +15,38 @@ func ConvertProtoToModel(protoDef *pb.Definition) *jsonSchema.Definition {
 		Type:               jsonSchema.DataType(protoDef.Type),
 		Instruction:        protoDef.Instruction,
 		Properties:         make(map[string]jsonSchema.Definition),
-		Items:              ConvertProtoToModel(protoDef.Items),
+		Items:              ConvertProtoToModel(protoDef.GetItems()), // Use Getters to handle nil cases
 		Model:              jsonSchema.ModelType(protoDef.Model),
 		ProcessingOrder:    protoDef.ProcessingOrder,
-		SystemPrompt:       &protoDef.SystemPrompt,
+		SystemPrompt:       getStringPointer(protoDef.GetSystemPrompt()), // Safe getter for pointers
 		ImprovementProcess: protoDef.ImprovementProcess,
 		SelectFields:       protoDef.SelectFields,
 		Voters:             protoDef.Voters,
-		HashMap:            ConvertProtoToHashMap(protoDef.HashMap),
-		NarrowFocus:        ConvertProtoToFocus(protoDef.NarrowFocus),
-		Req:                ConvertProtoToRequestFormat(protoDef.Req),
-		Choices:            ConvertProtoToChoices(protoDef.Choices),
-		SpeechToText: &jsonSchema.SpeechToText{
-			Model:             (jsonSchema.SpeechToTextModel)(protoDef.SpeechToText.Model),
-			AudioToTranscribe: protoDef.SpeechToText.AudioToTranscribe,
-			Language:          protoDef.SpeechToText.Language,
-			ToString:          protoDef.SpeechToText.ToString,
-			ToCaptions:        protoDef.SpeechToText.ToCaptions,
-			Format:            jsonSchema.AudioFormat(protoDef.SpeechToText.Format),
-		},
-		TextToSpeech: &jsonSchema.TextToSpeech{
-			Model:         (jsonSchema.TextToSpeechModel)(protoDef.TextToSpeech.Model),
-			Voice:         jsonSchema.Voice(protoDef.TextToSpeech.Voice),
-			StringToAudio: protoDef.TextToSpeech.StringToAudio,
-			Format:        jsonSchema.AudioFormat(protoDef.TextToSpeech.Format),
-		},
-		SendImage: &jsonSchema.SendImage{
-			ImagesData: protoDef.SendImage.ImagesData,
-		},
+		HashMap:            ConvertProtoToHashMap(protoDef.GetHashMap()),   // Check with Getters
+		NarrowFocus:        ConvertProtoToFocus(protoDef.GetNarrowFocus()), // Handle nil safely
+		Req:                ConvertProtoToRequestFormat(protoDef.GetReq()),
+		Choices:            ConvertProtoToChoices(protoDef.GetChoices()),
+		SpeechToText:       convertProtoSpeechToText(protoDef.GetSpeechToText()), // Safely handle nested structs
+		TextToSpeech:       convertProtoTextToSpeech(protoDef.GetTextToSpeech()),
+		SendImage:          convertProtoSendImage(protoDef.GetSendImage()), // Handle nil structs
 	}
 
-	for key, protoProperty := range protoDef.Properties {
-		modelDef.Properties[key] = *ConvertProtoToModel(protoProperty)
+	// Handle Properties map
+	if protoDef.Properties != nil {
+		for key, protoProperty := range protoDef.Properties {
+			modelDef.Properties[key] = *ConvertProtoToModel(protoProperty)
+		}
 	}
 
 	return modelDef
+}
+
+// Helper function to safely get string pointers
+func getStringPointer(val string) *string {
+	if val == "" {
+		return nil
+	}
+	return &val
 }
 
 // ConvertModelToProto converts your Go model Definition to a protobuf Definition
@@ -78,32 +75,100 @@ func ConvertModelToProto(modelDef *jsonSchema.Definition) *pb.Definition {
 		NarrowFocus:        ConvertModelToProtoFocus(modelDef.NarrowFocus),
 		Req:                ConvertModelToProtoRequestFormat(modelDef.Req),
 		Choices:            ConvertModelToProtoChoices(modelDef.Choices),
-		Image: &pb.Image{
-			Model: string(modelDef.Image.Model),
-			Size:  string(modelDef.Image.Size),
-		},
-		SpeechToText: &pb.SpeechToText{
-			Model:             string(modelDef.SpeechToText.Model),
-			AudioToTranscribe: modelDef.SpeechToText.AudioToTranscribe,
-			Language:          modelDef.SpeechToText.Language,
-			ToString:          modelDef.SpeechToText.ToString,
-			ToCaptions:        modelDef.SpeechToText.ToCaptions,
-			Format:            string(modelDef.SpeechToText.Format),
-		},
-		TextToSpeech: &pb.TextToSpeech{
-			Model:         string(modelDef.TextToSpeech.Model),
-			StringToAudio: modelDef.TextToSpeech.StringToAudio,
-			Format:        string(modelDef.TextToSpeech.Format),
-			Voice:         string(modelDef.TextToSpeech.Voice),
-		},
-		SendImage: &pb.SendImage{
-			ImagesData: modelDef.SendImage.ImagesData,
-		},
+		Image:              convertModelImage(modelDef.Image),
+		SpeechToText:       convertModelSpeechToText(modelDef.SpeechToText),
+		TextToSpeech:       convertModelTextToSpeech(modelDef.TextToSpeech),
+		SendImage:          convertModelSendImage(modelDef.SendImage),
 	}
 
-	for key, modelProperty := range modelDef.Properties {
-		protoDef.Properties[key] = ConvertModelToProto(&modelProperty)
+	// Handle Properties map
+	if modelDef.Properties != nil {
+		for key, modelProperty := range modelDef.Properties {
+			protoDef.Properties[key] = ConvertModelToProto(&modelProperty)
+		}
 	}
 
 	return protoDef
+}
+
+// Helper functions for SpeechToText, TextToSpeech, and other nested structs
+
+func convertProtoSpeechToText(speechToText *pb.SpeechToText) *jsonSchema.SpeechToText {
+	if speechToText == nil {
+		return nil
+	}
+	return &jsonSchema.SpeechToText{
+		Model:             jsonSchema.SpeechToTextModel(speechToText.Model),
+		AudioToTranscribe: speechToText.AudioToTranscribe,
+		Language:          speechToText.Language,
+		ToString:          speechToText.ToString,
+		ToCaptions:        speechToText.ToCaptions,
+		Format:            jsonSchema.AudioFormat(speechToText.Format),
+	}
+}
+
+func convertProtoTextToSpeech(textToSpeech *pb.TextToSpeech) *jsonSchema.TextToSpeech {
+	if textToSpeech == nil {
+		return nil
+	}
+	return &jsonSchema.TextToSpeech{
+		Model:         jsonSchema.TextToSpeechModel(textToSpeech.Model),
+		Voice:         jsonSchema.Voice(textToSpeech.Voice),
+		StringToAudio: textToSpeech.StringToAudio,
+		Format:        jsonSchema.AudioFormat(textToSpeech.Format),
+	}
+}
+
+func convertProtoSendImage(sendImage *pb.SendImage) *jsonSchema.SendImage {
+	if sendImage == nil {
+		return nil
+	}
+	return &jsonSchema.SendImage{
+		ImagesData: sendImage.ImagesData,
+	}
+}
+
+func convertModelSpeechToText(speechToText *jsonSchema.SpeechToText) *pb.SpeechToText {
+	if speechToText == nil {
+		return nil
+	}
+	return &pb.SpeechToText{
+		Model:             string(speechToText.Model),
+		AudioToTranscribe: speechToText.AudioToTranscribe,
+		Language:          speechToText.Language,
+		ToString:          speechToText.ToString,
+		ToCaptions:        speechToText.ToCaptions,
+		Format:            string(speechToText.Format),
+	}
+}
+
+func convertModelTextToSpeech(textToSpeech *jsonSchema.TextToSpeech) *pb.TextToSpeech {
+	if textToSpeech == nil {
+		return nil
+	}
+	return &pb.TextToSpeech{
+		Model:         string(textToSpeech.Model),
+		Voice:         string(textToSpeech.Voice),
+		StringToAudio: textToSpeech.StringToAudio,
+		Format:        string(textToSpeech.Format),
+	}
+}
+
+func convertModelSendImage(sendImage *jsonSchema.SendImage) *pb.SendImage {
+	if sendImage == nil {
+		return nil
+	}
+	return &pb.SendImage{
+		ImagesData: sendImage.ImagesData,
+	}
+}
+
+func convertModelImage(image *jsonSchema.Image) *pb.Image {
+	if image == nil {
+		return nil
+	}
+	return &pb.Image{
+		Model: string(image.Model),
+		Size:  string(image.Size),
+	}
 }
