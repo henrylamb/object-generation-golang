@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"github.com/henrylamb/object-generation-golang/converison"
 	pb "github.com/henrylamb/object-generation-golang/grpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -31,7 +32,7 @@ func (c *Client) GrpcGenerateObject(prompt string, definition *pb.Definition) (*
 	defer cancel()
 
 	// Set up metadata with the authorization token
-	md := metadata.New(map[string]string{"authorization": "Bearer " + c.Password})
+	md := metadata.New(map[string]string{"x-api-key": c.Password})
 	ctx = metadata.NewOutgoingContext(ctx, md)
 
 	// Create the request object
@@ -46,8 +47,10 @@ func (c *Client) GrpcGenerateObject(prompt string, definition *pb.Definition) (*
 		return nil, fmt.Errorf("failed to call GenerateObject: %v", err)
 	}
 
+	data, err := converison.ConvertStructpbToMap(response.Data)
+
 	res := &Response{
-		Data:    response.Data,
+		Data:    data,
 		UsdCost: response.UsdCost,
 	}
 

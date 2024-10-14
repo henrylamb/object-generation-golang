@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	JSONSchemaService_GenerateObject_FullMethodName = "/jsonSchema.JSONSchemaService/GenerateObject"
+	JSONSchemaService_GenerateObject_FullMethodName         = "/jsonSchema.JSONSchemaService/GenerateObject"
+	JSONSchemaService_StreamGeneratedObjects_FullMethodName = "/jsonSchema.JSONSchemaService/StreamGeneratedObjects"
 )
 
 // JSONSchemaServiceClient is the client API for JSONSchemaService service.
@@ -28,7 +29,10 @@ const (
 //
 // The JSONSchemaService defines a service for generating JSON objects based on a schema definition.
 type JSONSchemaServiceClient interface {
+	// Standard request-response RPC
 	GenerateObject(ctx context.Context, in *RequestBody, opts ...grpc.CallOption) (*Response, error)
+	// New method: Server-side streaming RPC
+	StreamGeneratedObjects(ctx context.Context, in *RequestBody, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamingResponse], error)
 }
 
 type jSONSchemaServiceClient struct {
@@ -49,13 +53,35 @@ func (c *jSONSchemaServiceClient) GenerateObject(ctx context.Context, in *Reques
 	return out, nil
 }
 
+func (c *jSONSchemaServiceClient) StreamGeneratedObjects(ctx context.Context, in *RequestBody, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamingResponse], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &JSONSchemaService_ServiceDesc.Streams[0], JSONSchemaService_StreamGeneratedObjects_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[RequestBody, StreamingResponse]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type JSONSchemaService_StreamGeneratedObjectsClient = grpc.ServerStreamingClient[StreamingResponse]
+
 // JSONSchemaServiceServer is the server API for JSONSchemaService service.
 // All implementations must embed UnimplementedJSONSchemaServiceServer
 // for forward compatibility.
 //
 // The JSONSchemaService defines a service for generating JSON objects based on a schema definition.
 type JSONSchemaServiceServer interface {
+	// Standard request-response RPC
 	GenerateObject(context.Context, *RequestBody) (*Response, error)
+	// New method: Server-side streaming RPC
+	StreamGeneratedObjects(*RequestBody, grpc.ServerStreamingServer[StreamingResponse]) error
 	mustEmbedUnimplementedJSONSchemaServiceServer()
 }
 
@@ -68,6 +94,9 @@ type UnimplementedJSONSchemaServiceServer struct{}
 
 func (UnimplementedJSONSchemaServiceServer) GenerateObject(context.Context, *RequestBody) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateObject not implemented")
+}
+func (UnimplementedJSONSchemaServiceServer) StreamGeneratedObjects(*RequestBody, grpc.ServerStreamingServer[StreamingResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamGeneratedObjects not implemented")
 }
 func (UnimplementedJSONSchemaServiceServer) mustEmbedUnimplementedJSONSchemaServiceServer() {}
 func (UnimplementedJSONSchemaServiceServer) testEmbeddedByValue()                           {}
@@ -108,6 +137,17 @@ func _JSONSchemaService_GenerateObject_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JSONSchemaService_StreamGeneratedObjects_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(RequestBody)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(JSONSchemaServiceServer).StreamGeneratedObjects(m, &grpc.GenericServerStream[RequestBody, StreamingResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type JSONSchemaService_StreamGeneratedObjectsServer = grpc.ServerStreamingServer[StreamingResponse]
+
 // JSONSchemaService_ServiceDesc is the grpc.ServiceDesc for JSONSchemaService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -120,6 +160,12 @@ var JSONSchemaService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _JSONSchemaService_GenerateObject_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "StreamGeneratedObjects",
+			Handler:       _JSONSchemaService_StreamGeneratedObjects_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "object-generation.proto",
 }

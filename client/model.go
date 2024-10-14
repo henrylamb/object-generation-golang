@@ -9,6 +9,6 @@ type RequestBody struct {
 
 // Create a response struct
 type Response struct {
-	Data    []byte  `json:"data"` //this data can then be marshalled into the apprioate object type.
-	UsdCost float64 `json:"usdCost"`
+	Data    map[string]any `json:"data"` //this data can then be marshalled into the apprioate object type.
+	UsdCost float64        `json:"usdCost"`
 }
