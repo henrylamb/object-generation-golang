@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/henrylamb/object-generation-golang/client"
 	"github.com/henrylamb/object-generation-golang/jsonSchema"
+	"log"
 	"os"
 	"testing"
 )
@@ -24,9 +25,16 @@ func TestIntegrationTestConstructor(t *testing.T) {
 		t.Errorf("Error sending request: %v", err)
 	}
 
+	// Marshal res (map[string]any) into JSON bytes
+	bytes, err := json.Marshal(response.Data)
+	if err != nil {
+		log.Println("Failed to marshal res:", err)
+		t.Errorf("Error marshalling response: %v", err)
+	}
+
 	//unmarshal the response
 	testVal := &CodeTest{}
-	err = json.Unmarshal(response.Data, testVal)
+	err = json.Unmarshal(bytes, testVal)
 	if err != nil {
 		t.Errorf("Error unmarshalling response: %v", err)
 	}
