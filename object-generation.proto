@@ -27,6 +27,7 @@ message Definition {
   SpeechToText speechToText = 16; // Corresponds to Go's Speech field
   Image image = 17; // Corresponds to Go's Image field
   SendImage sendImage = 18; // Corresponds to Go's SendImage field
+  bool stream = 19;
 }
 
 // Audio message

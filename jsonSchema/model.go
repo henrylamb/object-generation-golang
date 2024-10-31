@@ -33,9 +33,9 @@ type Definition struct {
 	Image        *Image        `json:"image,omitempty"`
 
 	//Utility fields:
-	Req *RequestFormat
+	Req *RequestFormat `json:"req,omitempty"`
 	// NarrowFocus
-	NarrowFocus *Focus
+	NarrowFocus *Focus `json:"narrowFocus,omitempty"`
 
 	// SelectFields has the aim of being able to select multiple pieice of information and when they are all present then continue with processing. Such that the selection of information can work like so:
 	//The system works as an absolute path that has to be selected. So starting from the top most object then down to the selected field(s)
@@ -51,6 +51,9 @@ type Definition struct {
 
 	//Image URL --> if the LLM supports reading an image due to it being multi-model then the image URL will be passed in here
 	SendImage *SendImage `json:"sendImage,omitempty"`
+
+	//Stream - used for instructing when the information should be streamed. Please visit the documentation for more information for which types are supported.
+	Stream bool `json:"stream,omitempty"`
 }
 
 type Choices struct {

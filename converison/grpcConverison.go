@@ -29,6 +29,7 @@ func ConvertProtoToModel(protoDef *pb.Definition) *jsonSchema.Definition {
 		SpeechToText:       convertProtoSpeechToText(protoDef.GetSpeechToText()), // Safely handle nested structs
 		TextToSpeech:       convertProtoTextToSpeech(protoDef.GetTextToSpeech()),
 		SendImage:          convertProtoSendImage(protoDef.GetSendImage()), // Handle nil structs
+		Stream:             protoDef.Stream,
 	}
 
 	// Handle Properties map
@@ -79,6 +80,7 @@ func ConvertModelToProto(modelDef *jsonSchema.Definition) *pb.Definition {
 		SpeechToText:       convertModelSpeechToText(modelDef.SpeechToText),
 		TextToSpeech:       convertModelTextToSpeech(modelDef.TextToSpeech),
 		SendImage:          convertModelSendImage(modelDef.SendImage),
+		Stream:             modelDef.Stream,
 	}
 
 	// Handle Properties map
