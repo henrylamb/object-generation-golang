@@ -54,6 +54,9 @@ type Definition struct {
 
 	//Stream - used for instructing when the information should be streamed. Please visit the documentation for more information for which types are supported.
 	Stream bool `json:"stream,omitempty"`
+
+	//Temp - used for passing in a temperature value for the prompt request
+	Temp float64 `json:"temp,omitempty"`
 }
 
 type Choices struct {
