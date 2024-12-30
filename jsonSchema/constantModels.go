@@ -28,6 +28,7 @@ const (
 	O1                ModelType = "o1-preview"
 	O1Mini            ModelType = "o1-mini"
 	GeminiFlash       ModelType = "GeminiFlash"
+	GeminiFlash2      ModelType = "GeminiFlash2"
 	GeminiFlash8B     ModelType = "GeminiFlash8B"
 	GeminiPro         ModelType = "GeminiPro"
 	Llama8bInstant    ModelType = "Llama8bInstant"
