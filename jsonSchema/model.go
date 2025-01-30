@@ -57,6 +57,9 @@ type Definition struct {
 
 	//Temp - used for passing in a temperature value for the prompt request
 	Temp float64 `json:"temp,omitempty"`
+
+	//OverridePrompt - used for overriding the prompt that is passed in
+	OverridePrompt *string `json:"overridePrompt,omitempty"`
 }
 
 type Choices struct {
