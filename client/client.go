@@ -1,8 +1,9 @@
 package client
 
 import (
-	"github.com/henrylamb/object-generation-golang/jsonSchema"
 	"net/http"
+
+	"github.com/henrylamb/object-generation-golang/jsonSchema"
 )
 
 // Client responsible for holding base configuration and dependencies
@@ -31,6 +32,17 @@ func NewDefaultClient(password, url string) *Client {
 		BaseURL:           url,
 		HttpClient:        &http.Client{},
 		RequestSender:     NewDefaultRequestSender(),
+		ResponseProcessor: NewResponseProcessor(),
+	}
+}
+
+// NewGZipClient initializes a new Client instance with GZip compression for requests
+func NewGZipClient(password, url string) *Client {
+	return &Client{
+		Password:          password,
+		BaseURL:           url,
+		HttpClient:        &http.Client{},
+		RequestSender:     NewGZipRequestSender(),
 		ResponseProcessor: NewResponseProcessor(),
 	}
 }
