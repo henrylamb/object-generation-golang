@@ -8,11 +8,15 @@ import (
 )
 
 // DefaultRequestSender is a default implementation of RequestSender
-type DefaultRequestSender struct{}
+type DefaultRequestSender struct{
+	client *http.Client
+}
 
 // NewDefaultRequestSender initializes a new DefaultRequestSender
-func NewDefaultRequestSender() *DefaultRequestSender {
-	return &DefaultRequestSender{}
+func NewDefaultRequestSender(client *http.Client) *DefaultRequestSender {
+	return &DefaultRequestSender{
+		client: client,
+	}
 }
 
 // SendRequestBody sends a JSON request and returns a response
@@ -36,8 +40,7 @@ func (rs *DefaultRequestSender) SendRequestBody(baseURL, token string, requestBo
 	req.Header.Set("Authorization", "Bearer "+token)
 
 	// Send the request and return the response
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := rs.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}
