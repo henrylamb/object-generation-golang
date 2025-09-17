@@ -9,11 +9,15 @@ import (
 )
 
 // GZipRequestSender is a request sender that compresses the request body using gzip
-type GZipRequestSender struct{}
+type GZipRequestSender struct{
+	client *http.Client
+}
 
 // NewGZipRequestSender initializes a new GZipRequestSender
-func NewGZipRequestSender() *GZipRequestSender {
-	return &GZipRequestSender{}
+func NewGZipRequestSender(client *http.Client) *GZipRequestSender {
+	return &GZipRequestSender{
+		client: client,
+	}
 }
 
 // SendRequestBody sends a gzip-compressed JSON request and returns a response
@@ -53,8 +57,7 @@ func (grs *GZipRequestSender) SendRequestBody(baseURL, token string, requestBody
 	req.Header.Set("Authorization", "Bearer "+token)
 
 	// Send the request and return the response
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := grs.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("error sending request: %v", err)
 	}

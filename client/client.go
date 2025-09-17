@@ -26,23 +26,23 @@ type RequestSender interface {
 }
 
 // NewDefaultClient initializes a new Client instance with default implementations
-func NewDefaultClient(password, url string) *Client {
+func NewDefaultClient(password, url string, client *http.Client) *Client {
 	return &Client{
 		Password:          password,
 		BaseURL:           url,
-		HttpClient:        &http.Client{},
-		RequestSender:     NewDefaultRequestSender(),
+		HttpClient:        client,
+		RequestSender:     NewDefaultRequestSender(client),
 		ResponseProcessor: NewResponseProcessor(),
 	}
 }
 
 // NewGZipClient initializes a new Client instance with GZip compression for requests
-func NewGZipClient(password, url string) *Client {
+func NewGZipClient(password, url string, client *http.Client) *Client {
 	return &Client{
 		Password:          password,
 		BaseURL:           url,
-		HttpClient:        &http.Client{},
-		RequestSender:     NewGZipRequestSender(),
+		HttpClient:        client,
+		RequestSender:     NewGZipRequestSender(client),
 		ResponseProcessor: NewResponseProcessor(),
 	}
 }
